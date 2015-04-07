@@ -1,0 +1,5 @@
+- understood C operator precedence. C does not have an order for
+  evaluation.
+
+- intro to git.
+- valgrind ./exe to check for memory leaks
