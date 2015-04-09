@@ -3,3 +3,6 @@
 
 - intro to git.
 - valgrind ./exe to check for memory leaks
+- EOF is NOT part of the file.
+- When EOF is include as part of the file then fread truncates the read
+  at the EOF; So fread 1 less byte.

@@ -27,12 +27,11 @@
 /* Functions */
 int file_size(FILE *file)
 {
-  int start,stop;
+  int size;
   fseek(file,0L,SEEK_END);
-  stop	= ftell(file);
+  size = ftell(file);
   fseek(file,0L,SEEK_SET);
-  start	= ftell(file);
-  return(stop-start+1);
+  return(size);
 }
 
 void nl_to_eos(char *name)
@@ -54,42 +53,37 @@ void nl_to_eos(char *name)
 ** Use "strace" to trace system calls
 */
 
-int main()
+int main(int argc, char *argv[])
 {
-	char *source = malloc(SIZE);
-	char *destination = malloc(SIZE);
 	int filesize;
-	FILE *fp;
-	FILE *tmp;
+	FILE *fps;
+	FILE *fpd;
 	errno = 0;
 
-	(void) printf("Path of the source file -> ");
-	(void) fgets(source,SIZE,stdin);
-
-	(void) printf("Path of the destination file -> ");
-	(void) fgets(destination,SIZE,stdin);
-
-	nl_to_eos(source);
-	nl_to_eos(destination);
-	
-	(void) printf("Source File -> %s, Name Length -> %zd\n", source, strlen(source));
-	(void) printf("Destination File -> %s, Name Length -> %zd\n", destination, strlen(destination));
-
 	/*Check if source exists and its size*/
-	if ((fp = fopen(source, "rb"))==NULL) {
-	  printf("File, %s, does not exist. Error -> %d\n", source, errno);
-	  //fclose(fp);
+	if ((fps = fopen(argv[1], "rb"))==NULL) {
+	  printf("File, %s, does not exist. Error -> %d\n", argv[1], errno);
+	  //fclose(fps);
 	  exit(0);
 	}
 	else {
-	  filesize = file_size(fp);
+	  filesize = file_size(fps);
 	  printf("Source file is %d Bytes\n", filesize);
 	}
 
-	tmp = fp;
-  	fseek(tmp,0L,SEEK_SET);
 	/*Check if enough memory available in destination*/
-	free(source);
-	free(destination);
+	char *buffer = malloc(filesize * sizeof *buffer);
+	fread(buffer,1,filesize,fps);
+
+	printf("Buffer read is -> %s\n", buffer);
+	fpd = fopen(argv[2], "w+b");
+	size_t dsize = fwrite(buffer,1,filesize,fpd);
+
+	if (dsize != filesize) {
+	  printf("No of bytes written %zd not equal to No of bytes read %d. Incorrect copy!\n",dsize,filesize);
+	}
+
+	fclose(fps);
+	fclose(fpd);
 	return 0;
 }
