@@ -6,3 +6,7 @@
 - EOF is NOT part of the file.
 - When EOF is include as part of the file then fread truncates the read
   at the EOF; So fread 1 less byte.
+
+Connecting to Home computer
+SSH(https://help.ubuntu.com/community/SSH)
+- install openssh-server
