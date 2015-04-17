@@ -8,5 +8,18 @@
   at the EOF; So fread 1 less byte.
 
 Connecting to Home computer
-SSH(https://help.ubuntu.com/community/SSH)
+SSH(https://help.ubuntu.com/community/SSH)(this is password-less entry)
 - install openssh-server
+- config ssh with "sshd_config"
+- restart sshd server after changing the configuration("sudo service ssh
+	restart")
+- create ssh keys; copy the public key to remote host and append it to
+	~/.ssh/authorized_keys by "ssh-copy-id username@remotehost"
+
+Detailed instructions on superuser.com to setup connection to home
+computer
+http://superuser.com/questions/603831/how-to-connect-home-computers-linux-from-office-computer-windows-using-putty
+
+How to Find the address to a remote host
+
+- /sbin/ifconfig
