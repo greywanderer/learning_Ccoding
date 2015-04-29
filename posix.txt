@@ -1,0 +1,52 @@
+Process Creation
+
+- fork(), #include <sys/types.h>; #include <unistd.h>
+  pid_t fork(void);
+  - returns
+	  - '0' to child process.
+		- Process ID to parent process.
+		- '-1' for failure.
+  - child process has its own copy of parent's file descriptors.
+	  - how does the child access them?
+	- child process runtime is set to zero?
+	- pending alarms are cleared for the child?
+	- set of pending signals is set to the empty set.
+	- file locks are NOT inherited.
+
+- pipe(), #include <unistd.h>
+  int pipe(int fildes[2]); fildes[0] is read-end and fildes[1] is
+	write-end
+  - returns
+	  - '0' on success.
+		- '-1' on failure. Error code is stored in 'errno' for
+			identification.
+	- the pipe is created before a fork. the child just inherits it.
+	- gives access to both ends of the pipe to the parent as well as the child.
+	- places descriptors for each end of the pipe into the array.
+		'O_NONBLOCK' and 'FD_CLOEXEC' flags are clear on both descriptors.
+		Use 'fcntl()' to set them.
+
+- exit()
+  - returns
+	  - 
+	- all functions registered by standard C atexit() function are called
+		in the reverse order of registration.
+	- all open output streams are flushed(data written out) and the
+		streams are closed.
+	- all files created by tmpfile() are deleted.
+	- _exit() is called
+  	- all open file descriptors and directory streams are closed.
+		- if parent process is executing a wait()/waitpid(), the parent
+			wakes up and status is made available.
+		- children of the terminated process are assigned a new parent
+			process ID.
+		- 'SIGCHILD' is sent to parent if supported.
+		- several job control signals are sent.
+		- all resources used by the process are returned.
+
+- sleep(), #include <unistd.h>
+	unsigned int sleep(unsigned int seconds);
+	- returns
+		- '0' if the requested time has elapsed.
+		- if interrupted by a signal, the number of unslept seconds is
+			returned.
